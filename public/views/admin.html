@@ -1,0 +1,339 @@
+<style>
+*,
+*:after,
+*:before {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+
+.clearfix:before,
+.clearfix:after {
+	content: " ";
+	display: table;
+}
+
+.clearfix:after {
+	clear: both;
+}
+
+body {
+	font-family: sans-serif;
+	background: #f6f9fa;
+}
+
+h1 {
+	color: #ccc;
+	text-align: center;
+}
+
+a {
+  color: #ccc;
+  text-decoration: none;
+  outline: none;
+}
+
+/*Fun begins*/
+.tab_container {
+	width: 90%;
+	margin: 0 auto;
+	padding-top: 70px;
+	position: relative;
+}
+
+input, section {
+  clear: both;
+  padding-top: 10px;
+  display: none;
+}
+
+label {
+  font-weight: 700;
+  font-size: 18px;
+  display: block;
+  float: left;
+  width: 20%;
+  padding: 1.5em;
+  color: #757575;
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  background: #f0f0f0;
+}
+
+#tab1:checked ~ #content1,
+#tab2:checked ~ #content2,
+#tab3:checked ~ #content3,
+#tab4:checked ~ #content4,
+#tab5:checked ~ #content5 {
+  display: block;
+  padding: 20px;
+  background: #fff;
+  color: #999;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.tab_container .tab-content p,
+.tab_container .tab-content h3 {
+  -webkit-animation: fadeInScale 0.7s ease-in-out;
+  -moz-animation: fadeInScale 0.7s ease-in-out;
+  animation: fadeInScale 0.7s ease-in-out;
+}
+.tab_container .tab-content h3  {
+  text-align: center;
+}
+
+.tab_container [id^="tab"]:checked + label {
+  background: #fff;
+  box-shadow: inset 0 3px #0CE;
+}
+
+.tab_container [id^="tab"]:checked + label .fa {
+  color: #0CE;
+}
+
+label .fa {
+  font-size: 1.3em;
+  margin: 0 0.4em 0 0;
+}
+
+/*Media query*/
+@media only screen and (max-width: 930px) {
+  label span {
+    font-size: 14px;
+  }
+  label .fa {
+    font-size: 14px;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  label span {
+    display: none;
+  }
+
+  label .fa {
+    font-size: 16px;
+  }
+
+  .tab_container {
+    width: 98%;
+  }
+}
+
+/*Content Animation*/
+@keyframes fadeInScale {
+  0% {
+  	transform: scale(0.9);
+  	opacity: 0;
+  }
+  
+  100% {
+  	transform: scale(1);
+  	opacity: 1;
+  }
+
+}
+
+</style>
+<h1 style="color:red;">ADMIN PANEL</h1>
+
+		<div class="tab_container">
+		<input id="tab3" type="radio" name="tabs" checked>
+			<label for="tab3"><i class="fa fa-bar-chart-o"></i><span>Cab Type</span></label>
+
+			<input id="tab1" type="radio" name="tabs" >
+			<label for="tab1"><i class="fa fa-code"></i><span>Car Type</span></label>
+
+			<input id="tab2" type="radio" name="tabs">
+			<label for="tab2"><i class="fa fa-pencil-square-o"></i><span>Driver Type</span></label>
+
+
+			<input id="tab4" type="radio" name="tabs">
+			<label for="tab4"><i class="fa fa-folder-open-o"></i><span>Portfolio</span></label>
+
+			<input id="tab5" type="radio" name="tabs">
+			<label for="tab5"><i class="fa fa-envelope-o"></i><span>Contact</span></label>
+
+
+			<section id="content3" class="tab-content">
+				
+			 <table class="table table-filter">
+									 <thead>
+									 <tbody>
+										 <!-- <tr data-status="car"> -->
+
+											 <tr>
+
+											 <th>CabName</th>
+											 <th>Amount per KM</th>
+											 <th>Free KM</th>
+											 <th>Extra KM Charge</th>
+											 <th>Waiting Charge </th>
+
+											
+											 </tr>
+											 </thead>
+											 <tbody>
+											 <tr>
+
+											 <td><input type="text" class="form-control" minlength="2"  ng-model="cabs.CabName" required></td>
+											 <td><input type="text" class="form-control" ng-model="cabs.CabAmount"></td>
+											 <td><input type="text" class="form-control" ng-model="cabs.CabKM"></td>
+											 <td><input type="text" class="form-control" ng-model="cabs.CabAKM"></td>
+											 <td><input type="text" class="form-control" ng-model="cabs.CabWC"></td>
+											 <!-- <td><input type="text" class="form-control" ng-model="cars.CarNumber"></td>
+ -->
+								<td>
+								<button ng-click="addCab()" type="button"  class="btn btn-primary btn-circle btn-lg"><i class="glyphicon glyphicon-ok" ></i></button></td>
+								<td> <button type="button" ng-click="updateCab()" class="btn btn-info btn-circle btn-lg"><i class="glyphicon glyphicon-upload"></i></button></td></tr>
+
+											 </tr>
+											 <tr ng-repeat="cn in cabslist">
+
+											 <td>{{cn.CabName}}</td>
+											 <td>{{cn.CabAmount}}</td>
+											 <td>{{cn.CabKM}}</td>
+											 <td>{{cn.CabAKM}}</td>
+											 <td>{{cn.CabWC}}</td>
+											
+
+
+								<td><button ng-click="removeCab(cn)" type="button" class="btn btn-danger btn-circle btn-lg"><i class="glyphicon glyphicon-trash"></i></button></td>
+								<td><button ng-click="editCab(cn)" type="button" class="btn btn-success btn-circle btn-lg"><i class="glyphicon glyphicon-edit"></i></button></td>
+																</tr>
+
+											 </tbody>
+											 </table>
+							
+
+			</section>
+
+
+			<section id="content1" class="tab-content">
+			 <table class="table table-filter">
+									 <thead>
+									 <tbody>
+										 <!-- <tr data-status="car"> -->
+
+											 <tr>
+
+											 <th>Car Name</th>
+											 <th>Car Type</th>
+											 <th>Car Number</th>
+
+											 </tr>
+											 </thead>
+											 <tbody>
+											 <tr>
+
+											 <td><input type="text" class="form-control" minlength="2"  ng-model="cars.CarName"></td>
+									 <td><div><select type="text" class="form-control" ng-model="cabs.CarType" required >
+
+<option ng-repeat="cn in cabslist">{{cn.CabName}}</option>
+</select></div></td>
+											<!--  <td><input type="text" class="form-control" ng-model="cars.CarType"></td> -->
+											 <td><input type="text" class="form-control" ng-model="cars.CarNumber"></td>
+
+								<td>
+								<button ng-click="addCar()" type="button"  class="btn btn-primary btn-circle btn-lg"><i class="glyphicon glyphicon-ok" ></i></button></td>
+																<td> <button type="button" ng-click="updateCar()" class="btn btn-info btn-circle btn-lg"><i class="glyphicon glyphicon-upload"></i></button></td></tr>
+
+											 </tr>
+											 <tr ng-repeat="cr in carslist">
+
+											 <td>{{cr.CarName}}</td>
+											 <td>{{cr.CarType}}</td>
+											 <td>{{cr.CarNumber}}</td>
+
+
+								<td><button ng-click="removeCar(cr)" type="button" class="btn btn-danger btn-circle btn-lg"><i class="glyphicon glyphicon-trash"></i></button></td>
+								<td><button ng-click="editCar(cr)" type="button" class="btn btn-success btn-circle btn-lg"><i class="glyphicon glyphicon-edit"></i></button></td>
+																</tr>
+
+											 </tbody>
+											 </table>
+							</section>
+
+			<section id="content2" class="tab-content">
+				 <table class="table table-filter ">
+								 <thead>
+								 <tbody>
+									 <tr data-status="driver">
+
+										 <tr>
+
+										 <th>Driver Name</th>
+										 <th>Driver Address</th>
+										 <th>Email</th>
+										 <th>Phone Number</th>
+										 <th>License Number</th>
+										 <th>Password</th>
+										 <th>Car Name</th>
+										 <th>Car Type</th>
+										 <th>Car Number</th>
+
+										 </tr>
+										 </thead>
+										 <tbody>
+										 <tr>
+
+										 <td><input type="text" class="form-control" ng-model="drivers.DriverName"></td>
+										 <td><input type="text" class="form-control" ng-model="drivers.DriverAddress"></td>
+										 <td><input type="text" class="form-control" ng-model="drivers.Email"></td>
+										  <td><input type="text" class="form-control" ng-model="drivers.PhoneNumber"></td>
+										 <td><input type="text" class="form-control" ng-model="drivers.LicenseNumber"></td>
+										  <td><input type="text" class="form-control" ng-model="drivers.Password"></td>
+
+       <td><div><select  class="form-control" ng-model="drivers.CarName" required >
+<option ng-repeat="cr in carslist">{{cr.CarName}}</option>
+ </select></div></td>
+ <td><div><select type="text" class="form-control" ng-model="cabs.CarType" required >
+
+<option ng-repeat="cn in cabslist">{{cn.CabName}}</option>
+</select></div></td>
+<td><div><select class="form-control" ng-model="drivers.CarNumber" required >
+
+<option ng-repeat="cr in carslist">{{cr.CarNumber}}</option>
+</select></div></td>
+
+
+							<td>
+							<button ng-click="addDriver()" type="button"  class="btn btn-primary btn-circle btn-lg"><i class="glyphicon glyphicon-ok" ></i></button></td>
+															<td> <button type="button" ng-click="updateDriver()" class="btn btn-info btn-circle btn-lg"><i class="glyphicon glyphicon-upload"></i></button></td></tr>
+
+										 </tr>
+										 <tr ng-repeat="dr in driverslist">
+
+										 <td>{{dr.DriverName}}</td>
+										 <td>{{dr.DriverAddress}}</td>
+										 <td>{{dr.Email}}</td>
+										 <td>{{dr.PhoneNumber}}</td>
+										 <td>{{dr.LicenseNumber}}</td>
+										 <td>{{dr.Password}}</td>
+										 <td>{{dr.CarName}}</td>
+										 <td>{{dr.CarType}}</td>
+										 <td>{{dr.CarNumber}}</td>
+
+							<td><button ng-click="removeDriver(dr)" type="button" class="btn btn-danger btn-circle btn-lg"><i class="glyphicon glyphicon-trash"></i></button></td>
+							<td><button ng-click="editDriver(dr)" type="button" class="btn btn-success btn-circle btn-lg"><i class="glyphicon glyphicon-edit"></i></button></td>
+															</tr>
+
+										 </tbody>
+										 </table>
+
+			</section>
+
+
+			
+
+			<section id="content4" class="tab-content">
+				<h3>Headline 4</h3>
+		      	<p>tab 4 Content</p>
+			</section>
+
+			<section id="content5" class="tab-content">
+				<h3>Headline 5</h3>
+		      	<p>Tab 5 Content.</p>
+			</section>
+		</div>

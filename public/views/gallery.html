@@ -1,0 +1,590 @@
+<div class="fs-slider" id="fs-slider">
+
+	<figure>
+		<img src="../img/resrc/dear zindagi.jpg" alt="image01" />
+		<figcaption>
+			<h3>Eloquence</h3>
+			<p>American apparel flexitarian put a bird on it, mixtape typewriter irony aesthetic. </p>
+		</figcaption>
+	</figure>
+
+	<figure>
+		<img src="../img/resrc/dear zindagi.jpg" alt="image02" />
+		<figcaption>
+			<h3>Quintessential</h3>
+			<p>Cardigan craft beer mixtape, skateboard forage fixie truffaut messenger bag. </p>
+		</figcaption>
+	</figure>
+
+	<!-- ... -->
+
+</div>
+We will want our jQuery plugin to transform that structure into the following one:
+<section class="fs-container">
+
+	<div class="fs-wrapper">
+
+		<div class="fs-slider" id="fs-slider">
+
+			<div class="fs-block">
+
+				<figure style="display: block; ">
+					<img src="../img/resrc/dear zindagi.jpg" alt="image01" />
+					<figcaption>
+						<h3>Eloquence</h3>
+						<p>American apparel flexitarian put a bird on it, mixtape typewriter irony aesthetic. </p>
+					</figcaption>
+				</figure>
+
+			</div><!-- /fs-block -->
+
+			<div class="fs-block">
+				<!-- ... -->
+			</div>
+
+			<!-- ... -->
+
+		</div><!-- /fs-slider -->
+
+		<nav class="fs-navigation">
+			<span>Previous</span>
+			<span>Next</span>
+		</nav>
+
+	</div><!-- /fs-wrapper -->
+
+</section><!-- /fs-container -->
+<style>
+
+.fs-container {
+	margin: 20px auto 50px auto;
+	position: relative;
+	width: 40%;
+	padding: 0 15%;
+	max-width: 700px;
+	min-width: 220px;
+	height: 500px;
+	box-sizing: content-box;
+}
+Let’s add a realistic shadow under the slider using a pseudo-element. We’ll use a background image for that and setting a background size of 100% will ensure that the shadow resizes with our slider:
+.fs-container:before {
+	content: '';
+	position: absolute;
+	bottom: -40px;
+	background: transparent url(../images/shadow.png) no-repeat center center;
+	height: 90px;
+	width: 90%;
+	left: 5%;
+	opacity: 0.8;
+	background-size: 100% 100%;
+}
+The additional wrapper that we’ve added around the slider will have perspective:
+.fs-wrapper {
+	width: 100%;
+	height: 100%;
+	position: relative;
+	perspective: 1000px;
+}
+The slider itself will need to have the preserve 3d transform-style:
+.fs-slider{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	transform-style: preserve-3d;
+	pointer-events: none;
+}
+Each block will be placed in the center by setting the width to 70% and the left value to 15%. We’ll also add a transition to the block since we want to create a neat hover effect:
+.fs-block {
+	margin: 0;
+	position: absolute;
+	width: 70%;
+	height: 100%;
+	left: 15%;
+	pointer-events: auto;
+	transition: all 1s ease;
+}
+Now we need to position the blocks. The first one will be moved to the left by setting the translateX value to -100%. By rotating it -35 degrees on the Y-axis, we’ll make it turn away to the back on the left side:
+.fs-block:nth-child(1) {
+	transform-origin: top right;
+	transform: translateX(-100%) rotateY(-35deg);
+}
+On hover, we will want that panel block to move a bit to the front. We are using Modernizr, so we can define the hover effect only for non-touch devices (the body will have the class “no-touch”):
+.no-touch .fs-block:nth-child(1):hover {
+	transform: translateX(-100%) rotateY(-30deg);
+}
+The middle panel will have a z-index of 100 because we want to ensure that it’s always on top:
+.fs-block:nth-child(2) {
+	z-index: 100;
+}
+The last block will be moved right and rotated to the other side:
+.fs-block:nth-child(3) {
+	transform-origin: top left;
+	transform: translateX(100%) rotateY(35deg);
+}
+And on hover we’ll slightly move it to the front:
+.no-touch .fs-block:nth-child(3):hover {
+	transform: translateX(100%) rotateY(30deg);
+}
+Let’s add some semi-transparent overlays to the panels in order to make them look more realistic. We’ll use the pseudo-class :after for that and we0ll make it overflow 1px (to fix a little gap that might show up because of rounding errors of the width):
+.fs-block:after{
+	content: '';
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 1000;
+	pointer-events: none;
+	box-sizing: content-box;
+	border-left: 1px solid rgba(119,119,119,1);
+	border-right: 1px solid rgba(119,119,119,1);
+	left: -1px;
+}
+Each block will have a different type of gradient:
+.fs-block:nth-child(1):after {
+	background:
+		linear-gradient(
+			to right,
+			rgba(0,0,0,0.65) 0%,
+			rgba(0,0,0,0.2) 100%
+		);
+}
+The following gradient for the middle panel will add a slightly bended effect:
+.fs-block:nth-child(2):after {
+	opacity: 0.8;
+	background:
+		linear-gradient(
+			to right,
+			rgba(0,0,0,0.5) 0%,
+			rgba(0,0,0,0.12) 21%,
+			rgba(0,0,0,0.03) 31%,
+			rgba(0,0,0,0) 50%,
+			rgba(0,0,0,0.03) 70%,
+			rgba(0,0,0,0.12) 81%,
+			rgba(0,0,0,0.5) 100%
+		);
+}
+The last block will have the reverse gradient of the first one:
+.fs-block:nth-child(3):after {
+	background:
+		linear-gradient(
+			to right,
+			rgba(0,0,0,0.2) 0%,
+			rgba(0,0,0,0.65) 100%
+		);
+}
+Now, let’s style the figure elements. They will be positioned absolutely and fill all the block element:
+.fs-block figure {
+	width: 100%;
+	height: 100%;
+	margin: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	overflow: hidden;
+	z-index: 1;
+}
+The idea is to add another figure to a block when we navigate. So we need to set the z-index of the first figure higher so that the added figure does not show up. Then we will animate the width of the first figure to 0%, which will reveal the second one:
+.fs-block figure:first-child{
+	z-index: 10;
+}
+The image will also be set to position absolute:
+.fs-block figure img {
+	position: absolute;
+	top: 0;
+	left: 0;
+	display: block;
+}
+The figcation element will have a semi-transparent background and we will add a transition. This transition will happen when we add the class fs-transition to it (we’ll do that when we navigate):
+.fs-block figcaption {
+	padding: 0 20px;
+	margin: 0;
+	position: absolute;
+	width: 100%;
+	top: 25%;
+	background: rgba(0,0,0,0.4);
+	overflow: hidden;
+	height: 0%;
+	opacity: 0;
+	text-align: center;
+	transition: all 700ms cubic-bezier(0, 0, .15, 1);
+}
+
+.fs-block figcaption.fs-transition {
+	height: 35%;
+	opacity: 1;
+}
+Let’s style the text elements:
+.fs-block figcaption h3 {
+	font-size: 40px;
+	line-height: 40px;
+	margin: 0;
+	padding: 20px 0;
+	color: #fff;
+	text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+	font-family: 'Prata', serif;
+	font-weight: normal;
+}
+
+.fs-block figcaption p {
+	color: #fff;
+	padding: 20px 0;
+	margin: 0;
+	text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
+	border-top: 1px solid rgba(255,255,255,0.2);
+	box-shadow: 0 -1px 0 rgba(0,0,0,0.3);
+}
+The navigation will be placed in the bottom right corner:
+.fs-navigation {
+	position: absolute;
+	z-index: 2000;
+	bottom: 10px;
+	right: 15%;
+	margin-right: 15px;
+	user-select: none;
+}
+The spans will be used as the navigation arrows and they will be floating left and we’ll add the arrow as a background image:
+.fs-navigation span {
+	float: left;
+	width: 26px;
+	height: 26px;
+	border-radius: 4px;
+	text-indent: -90000px;
+	cursor: pointer;
+	opacity: 0.6;
+	margin-right: 3px;
+	background: rgba(0,0,0,0.4) url(../images/arrow.png) no-repeat 50% 50%;
+	pointer-events: auto;
+}
+The second span will be rotated so that the arrow points to the right:
+.fs-navigation span:nth-child(2) {
+	transform: rotate(180deg);
+}
+On hover we will increase the opacity:
+.fs-navigation span:hover{
+	opacity: 1;
+}
+Now, let’s add the transitions for the sliding effect. Each panel will have a different delay. Since we always want to animate a kind of swipe from the right, the first panel will have the highest delay. On the other hand, the third one will have no delay. The timing-function will be a custom cubic-bezier:
+.fs-block:nth-child(1) figure {
+	transition: width 900ms cubic-bezier(0, 0, .15, 1) 600ms;
+}
+.fs-block:nth-child(2) figure {
+	transition: width 900ms cubic-bezier(0, 0, .15, 1) 300ms;
+}
+.fs-block:nth-child(3) figure {
+	transition: width 900ms cubic-bezier(0, 0, .15, 1);
+}
+
+
+@media screen and (max-width: 1024px) {
+	.fs-block figcaption h3 {
+		font-size: 26px;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.fs-block figcaption {
+		padding: 0 10px;
+	}
+	.fs-block figcaption h3 {
+		font-size: 16px;
+		padding: 10px 0;
+	}
+	.fs-block figcaption p {
+		font-size: 13px;
+	}
+}
+
+</style>
+<script>
+$.ImgSlider.defaults	= {
+	autoplay	: false,
+	interval	: 4000
+};
+We will start by preloading all the images and once that’s done we will execute the _init function:
+_init				: function( options ) {
+
+	// options
+	this.options			= $.extend( true, {}, $.ImgSlider.defaults, options );
+
+	this.current			= 0;
+
+	<!-- // https://github.com/twitter/bootstrap/issues/2870 -->
+	var transEndEventNames	= {
+		'WebkitTransition'	: 'webkitTransitionEnd',
+		'MozTransition'		: 'transitionend',
+		'OTransition'		: 'oTransitionEnd',
+		'msTransition'		: 'MSTransitionEnd',
+		'transition'		: 'transitionend'
+	};
+	this.transEndEventName	= transEndEventNames[ Modernizr.prefixed('transition') ];
+
+	// the initial elements
+	this.$initElems			= this.$el.children( 'figure' );
+	// total number of elements
+	this.initElemsCount		= this.$initElems.length;
+
+	if( this.initElemsCount < 3 ) {
+
+		return false;
+
+	}
+
+	// build layout
+	this._layout();
+	// init events
+	this._initEvents();
+
+	// autoplay on
+	if( this.options.autoplay ) {
+
+		this._startSlideshow();
+
+	}
+
+}
+
+_layout				: function() {
+
+	this.$initElems.wrapAll( '<div class="fs-temp"></div>' ).hide();
+
+	this.$initElems
+		.filter( ':lt(3)' )
+		.clone()
+		.show()
+		.prependTo( this.$el )
+		.wrap( '<div class="fs-block"></div>' );
+
+	this.$el
+		.wrap( '<section class="fs-container"></section>' )
+		.wrap( '<div class="fs-wrapper"></div>' );
+
+	this.$blocks	= this.$el.children( 'div.fs-block' );
+
+	// cache the 3 main blocks
+	this.$blockL	= this.$blocks.eq( 0 );
+	this.$blockC	= this.$blocks.eq( 1 );
+	this.$blockR	= this.$blocks.eq( 2 );
+
+	this.$blockC.find( 'figcaption' ).addClass( 'fs-transition' );
+
+	// all items
+	this.$temp		= this.$el.find( 'div.fs-temp' );
+
+	// resize images
+	this._resizeBlocks();
+
+	// add navigation if needed
+	if( this.initElemsCount > 3 ) {
+
+		var $nav = $( '<nav class="fs-navigation"><span>Previous</span><span>Next</span></nav>' ).appendTo( this.$el.parent() );
+
+		// next and previous
+		this.$navPrev	= $nav.find( 'span:first' );
+		this.$navNext	= $nav.find( 'span:last' );
+
+		this._initNavigationEvents();
+
+	}
+
+}
+_initNavigationEvents	: function() {
+
+	var _self = this;
+
+	this.$navPrev.on( 'click.imgslider', function() {
+
+		if( _self.options.autoplay ) {
+
+			clearTimeout( _self.slideshow );
+			_self.options.autoplay	= false;
+
+		}
+
+		_self._navigate( 'left' );
+
+	} );
+	this.$navNext.on( 'click.imgslider', function() {
+
+		if( _self.options.autoplay ) {
+
+			clearTimeout( _self.slideshow );
+			_self.options.autoplay	= false;
+
+		}
+
+		_self._navigate( 'right' );
+
+	} );
+
+}
+
+_navigate				: function( dir ) {
+
+	if( this.isAnimating === true ) {
+
+		return false;
+
+	}
+
+	this.isAnimating = true;
+
+	var _self	= this,
+		$items	= this.$temp.children(),
+		LIndex, CIndex, RIndex;
+
+	this.$blocks.find( 'figcaption' ).hide().css( 'transition', 'none' ).removeClass( 'fs-transition' );
+
+	if( dir === 'right' ) {
+
+		LIndex = this.current + 1;
+		CIndex = this.current + 2;
+		RIndex = this.current + 3;
+
+		if( LIndex >= this.initElemsCount ) {
+
+			LIndex -= this.initElemsCount
+
+		}
+
+		if( CIndex >= this.initElemsCount ) {
+
+			CIndex -= this.initElemsCount
+
+		}
+
+	}
+	else if( dir === 'left' ) {
+
+		LIndex = this.current - 1;
+		CIndex = this.current;
+		RIndex = this.current + 1;
+
+		if( LIndex < 0 ) {
+
+			LIndex = this.initElemsCount - 1
+
+		}
+
+	}
+
+	if( RIndex >= this.initElemsCount ) {
+
+		RIndex -= this.initElemsCount
+
+	}
+
+	var $elL	= $items.eq( LIndex ).clone().show(),
+		$elC	= $items.eq( CIndex ).clone().show(),
+		$elR	= $items.eq( RIndex ).clone().show();
+
+	// resize images
+	$elL.children( 'img' ).css( this.$blockL.data( 'imgstyle' ) );
+	$elC.children( 'img' ).css( this.$blockC.data( 'imgstyle' ) );
+	$elR.children( 'img' ).css( this.$blockR.data( 'imgstyle' ) );
+
+	this.$blockL.append( $elL );
+	this.$blockC.append( $elC );
+	this.$blockR.append( $elR );
+
+	// now show new images
+
+	var $slides = this.$blocks.find( 'figure:first' ).css( 'width', '0%');
+
+	if( Modernizr.csstransitions ) {
+
+		$slides.on( this.transEndEventName, function( event ) {
+
+			var $this 		= $( this ),
+				blockIdx	= $this.parent().index('');
+
+			_self._slideEnd( dir, blockIdx, $elC );
+
+			$this.off( _self.transEndEventName ).remove();
+
+		} );
+
+	}
+	else {
+
+		$slides.each( function() {
+
+			var $this 		= $( this ),
+				blockIdx	= $this.parent().index('');
+
+			_self._slideEnd( dir, blockIdx, $elC );
+
+		} );
+
+		this._slideEnd();
+
+	}
+
+}
+The _navigate function takes control of which items will be positioned in the three visible blocks. We insert each of these item’s figure inside the block, resize the new images, and animate the width property of that same current block’s figure to 0px. In the end, we remove it leaving the new figure in its place. Also, we keep showing the middle block’s description while hiding all the others. This and also updating the current variable is done in the _slideEnd function:
+_slideEnd				: function( dir, blockIdx, $main ) {
+
+	if( blockIdx === 0 ) {
+
+		if( this.current === this.initElemsCount - 1 && dir === 'right' ) {
+
+			this.current = 0;
+
+		}
+		else if( this.current === 0 && dir === 'left' ) {
+
+			this.current = this.initElemsCount - 1;
+
+		}
+		else {
+
+			( dir === 'right' ) ? ++this.current : --this.current;
+
+		}
+
+		this.isAnimating = false;
+
+	}
+	else if( blockIdx === 1 ) {
+
+		$main.find( 'figcaption' ).addClass( 'fs-transition' );
+
+	}
+
+}
+The last thing we need to take care is when the user resizes the window. We need to resize the visible block images accordingly. Like we said before, this is also done once _layout is called:
+_initEvents				: function() {
+
+	var _self = this;
+
+	$window.on( 'debouncedresize.imgslider', function() {
+
+		_self._resizeBlocks();
+
+	} );
+
+},
+// resize the images
+_resizeBlocks			: function() {
+
+	var _self = this;
+
+	this.$blocks.each( function( i ) {
+
+		var $el 	= $( this ).children( 'figure' ),
+			$img	= $el.children( 'img' ),
+			dim		= _self._getImageDim( $img.attr( 'src' ), { width : $el.width(), height : $el.height() } );
+
+		// save the image dimentions
+		switch( i ) {
+			case 0 : _self.$blockL.data( 'imgstyle', dim ); break;
+			case 1 : _self.$blockC.data( 'imgstyle', dim ); break;
+			case 2 : _self.$blockR.data( 'imgstyle', dim ); break;
+		};
+
+		// apply style
+		$img.css( dim );
+
+	} );
+
+}
+
+</script>

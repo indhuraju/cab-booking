@@ -1,0 +1,63 @@
+  
+  <div class="container" style="overflow:hidden;">
+  <button class="btn btn-info btn-block">CONFIRMATION PAGE</button>
+
+<div class="table-responsive">
+  <table class="table">
+    <tr>
+      <td><b>BOOKING ID</b></td>
+      <td>
+      <p>{{cnf.id}}</p>
+    </td>
+    </tr>
+
+  <tr>
+    <td><b>Source</b></td>
+    <td>
+    <p>{{cnf.source}}</p>
+</td>
+</tr>
+<tr>
+  <td><b>Destination</b></td>
+  <td>
+  <p>{{cnf.Desination}}</p>
+</td>
+</tr>
+<tr>
+  <td><b>Type</b></td>
+  <td>
+  <p>{{cnf.Type}}</p>
+</td>
+</tr>
+<tr>
+  <td><b>Pickup Time</b></td>
+  <td>
+  <p>{{cnf.PickTime}}</p>
+</td>
+
+
+</tr>
+</table>
+<div class="col-md-7">
+<form class="form" name="myForm" ng-submit="ConfirmBook(cndetaillist)" style="color:white;background-color: TRANSPARENT;width: 63%;">
+  <label><b>User Name</b></label>
+
+  <input class="form-control" type="text" ng-model="cndetail.cnUser" required>
+
+  <label><b>Mail ID</b></label>
+  <td>
+  <input class="form-control" type="email" ng-model="cndetail.cnMail" required>
+
+  <label><b>Mobile No</b></label>
+
+  <input class="form-control" ng-model="cndetail.mobile" minlength="10" type="text" required>
+
+
+<button type="submit" ng-disabled="myForm.$invalid" class="btn btn-success">CONFIRM</button>
+</form>
+
+
+</div>
+</div>
+
+</div>

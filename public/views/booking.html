@@ -1,0 +1,200 @@
+<style type="text/css">
+    body
+    {
+        font-family: Arial;
+        font-size: 10pt;
+    }
+
+</style>
+</head>
+<body>
+<script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false&libraries=places"></script>
+<script type="text/javascript">
+    var source, destination;
+    var directionsDisplay;
+    var directionsService = new google.maps.DirectionsService();
+    google.maps.event.addDomListener(window, 'load', function () {
+        new google.maps.places.SearchBox(document.getElementById('txtSource'));
+        new google.maps.places.SearchBox(document.getElementById('txtDestination'));
+        directionsDisplay = new google.maps.DirectionsRenderer({ 'draggable': true });
+    });
+
+    function GetRoute() {
+        var mumbai = new google.maps.LatLng(18.9750, 72.8258);
+        var mapOptions = {
+            zoom: 7,
+            center: mumbai
+        };
+        map = new google.maps.Map(document.getElementById('dvMap'), mapOptions);
+        directionsDisplay.setMap(map);
+        directionsDisplay.setPanel(document.getElementById('dvPanel'));
+
+        //*********DIRECTIONS AND ROUTE**********************//
+        source = document.getElementById("txtSource").value;
+        destination = document.getElementById("txtDestination").value;
+
+        var request = {
+            origin: source,
+            destination: destination,
+            travelMode: google.maps.TravelMode.DRIVING
+        };
+        directionsService.route(request, function (response, status) {
+            if (status == google.maps.DirectionsStatus.OK) {
+                directionsDisplay.setDirections(response);
+            }
+        });
+
+        //*********DISTANCE AND DURATION**********************//
+        var service = new google.maps.DistanceMatrixService();
+        service.getDistanceMatrix({
+            origins: [source],
+            destinations: [destination],
+            travelMode: google.maps.TravelMode.DRIVING,
+            unitSystem: google.maps.UnitSystem.METRIC,
+            avoidHighways: false,
+            avoidTolls: false
+        }, function (response, status) {
+            if (status == google.maps.DistanceMatrixStatus.OK && response.rows[0].elements[0].status != "ZERO_RESULTS") {
+                var distance = response.rows[0].elements[0].distance.text;
+                var duration = response.rows[0].elements[0].duration.text;
+                var dvDistance = document.getElementById("dvDistance");
+                dvDistance.innerHTML = "";
+                dvDistance.innerHTML += "Distance: " + distance + "<br />";
+                dvDistance.innerHTML += "Duration:" + duration;
+
+            } else {
+                alert("Unable to find the distance via road.");
+            }
+        });
+    }
+</script>
+<div class="container">
+<div>
+  <div class="row">
+        <div class="col-md-6">
+  <div class="well-searchbox">
+      <form class="form-horizontal" role="form">
+          <div class="form-group">
+              <label class="col-md-4 control-label">Pickup Location</label>
+
+              <div class="col-md-8">
+                  <input type="text" id="txtSource" class="form-control" placeholder="Pickup Location">
+              </div>
+          </div>
+
+          <div class="form-group">
+              <label class="col-md-4 control-label">Drop Location</label>
+              <div class="col-md-8">
+                <input type="text" id="txtDestination"  class="form-control" placeholder="Destination">
+
+              </div>
+          </div>
+
+          <div class="form-group">
+              <label class="col-md-4 control-label">Car Type</label>
+              <div class="col-md-8">
+                <select class="form-control"  data-dismiss="modal" onchange="GetRoute()" ng-model="cabs.CarType"  style=" width:131px;height: 34px;border-color: aliceblue;">
+
+                 <option  ng-repeat="cn in cabslist">{{cn.CabName}}</option>
+
+                </select>
+
+              </div>
+          </div>
+                    
+          <div class="form-group">
+              <label class="col-md-4 control-label">Pickup Date</label>
+              <div class="col-md-8">
+                <input type="Date" id="dateT"  class="form-control">
+
+              </div>
+          </div>
+          <div class="form-group">
+              <label class="col-md-4 control-label">Pickup Time</label>
+              <div class="col-md-8">
+                <input type="time" id="timeT" class="form-control">
+
+              </div>
+          </div>
+          <div class="col-sm-offset-4 col-sm-5">
+              <button type="submit"  ng-click="clickBook()" class="btn btn-primary">BOOK</button>
+          </div>
+
+
+
+      </form>
+  </div></div>
+   <div class="col-md-6">
+<!--Windows-->
+<div class="panel panel-danger" ng-show="cabs.CarType" style="margin-top: 83px;width:50%;">
+      <!-- <div class="panel-heading">
+        <h3 class="panel-title">Fare Details</h3>
+      </div> -->
+     
+       <div class="modal-content">
+       <div class="modal-header">
+         <button type="button" class="close" data-dismiss="modal">&times;</button>
+         <h4 class="modal-title">Fare Details</h4>
+       </div>
+       <div class="modal-body">
+         <div id="dvDistance"></div>
+       </div>
+        <div id="dvMap" style="width: 950px; height: 500px; display:none;"></div>
+   <div id="dvPanel" style="width: 950px; height:500px;display:none;"></div>
+
+         <!-- <div ng-repeat="cn in cabslist">
+         </div> -->
+       
+          <div class="modal-footer">
+         <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+       </div>
+       </div>
+     </div>
+
+
+
+
+             <!-- <div id="dvMap" style="width: 950px; height: 500px; display:none;">
+             </div> -->
+
+            
+      </div>
+
+    </div>
+
+  </div>
+
+<!-- <table border="0" cellpadding="0" cellspacing="3">
+    <tr>
+        <td colspan="2">
+            Source:
+            <input type="text" id="txtSource"  style="width: 200px" />
+            &nbsp; Destination:
+            <input type="text" id="txtDestination"  style="width: 200px" />
+            <br />
+            <input type="button" value="Get Route" onclick="GetRoute()" />
+            <hr />
+           
+....
+
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2">
+            <div id="dvDistance">
+            </div>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <div id="dvMap" style="width: 400px; height: 400px;">
+            </div>
+        </td>
+        <td>
+            <div id="dvPanel" style="width: 500px; height: 500px">
+            </div>
+        </td>
+    </tr>
+</table>
+<br /> -->
+</body>
